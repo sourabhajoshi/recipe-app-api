@@ -1,0 +1,51 @@
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual environments
+venv/
+env/
+.venv/
+
+# Environment variables
+.env
+.env.*
+
+# Git files
+.git
+.gitignore
+
+# Docker files (optional)
+Dockerfile
+.dockerignore
+
+# Logs
+*.log
+
+# SQLite database
+db.sqlite3
+
+# Media & static (optional)
+media/
+staticfiles/
+
+# IDE files
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Test / coverage
+.coverage
+htmlcov/
+.pytest_cache/
+
+# Node modules (if any frontend)
+node_modules/
+
+# Temporary files
+tmp/
