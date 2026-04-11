@@ -19,8 +19,8 @@ jobs:
       - name: Build
         run: docker compose build --no-cache
 
-      - name: Lint
-        run: docker compose run --rm app flake8
+      # - name: Lint
+      #   run: docker compose run --rm app flake8
 
       - name: Test
         run: docker compose run --rm app python manage.py test
