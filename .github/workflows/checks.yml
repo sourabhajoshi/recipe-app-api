@@ -17,7 +17,7 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Build
-        run: docker compose build
+        run: docker compose build --no-cache
 
       - name: Lint
         run: docker compose run --rm app flake8
