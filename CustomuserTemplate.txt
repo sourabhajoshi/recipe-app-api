@@ -1,0 +1,97 @@
+```python
+"""
+Reusable Custom User Model Template for Django
+----------------------------------------------
+Copy this into your app (e.g., accounts/models.py)
+and adjust fields if needed.
+"""
+
+from django.db import models
+from django.contrib.auth.models import (
+    AbstractBaseUser, BaseUserManager, PermissionsMixin
+)
+
+
+# =========================
+# 1. Custom User Manager
+# =========================
+class UserManager(BaseUserManager):
+    """
+    Manager for custom user model.
+    Handles user & superuser creation.
+    """
+
+    def create_user(self, email, password=None, **extra_fields):
+        """
+        Create and return a regular user.
+        """
+        if not email:
+            raise ValueError("Users must have an email address")
+
+        # Normalize email (e.g., lowercase domain)
+        email = self.normalize_email(email)
+
+        # Create user instance
+        user = self.model(email=email, **extra_fields)
+
+        # Hash password (never store plain text)
+        user.set_password(password)
+
+        # Save to database
+        user.save(using=self._db)
+
+        return user
+
+    def create_superuser(self, email, password, **extra_fields):
+        """
+        Create and return a superuser (admin).
+        """
+        # Ensure admin flags are set
+        extra_fields.setdefault("is_staff", True)
+        extra_fields.setdefault("is_superuser", True)
+
+        # Safety checks
+        if extra_fields.get("is_staff") is not True:
+            raise ValueError("Superuser must have is_staff=True")
+        if extra_fields.get("is_superuser") is not True:
+            raise ValueError("Superuser must have is_superuser=True")
+
+        return self.create_user(email, password, **extra_fields)
+
+
+# =========================
+# 2. Custom User Model
+# =========================
+class User(AbstractBaseUser, PermissionsMixin):
+    """
+    Custom User model where email is the unique identifier
+    instead of username.
+    """
+
+    # Core fields
+    email = models.EmailField(max_length=255, unique=True)
+    name = models.CharField(max_length=255)
+
+    # Permissions-related fields
+    is_active = models.BooleanField(default=True)
+    is_staff = models.BooleanField(default=False)
+
+    # Attach manager
+    objects = UserManager()
+
+    # Use email for login instead of username
+    USERNAME_FIELD = "email"
+
+    # Optional: fields required when creating superuser via CLI
+    REQUIRED_FIELDS = ["name"]
+
+    def __str__(self):
+        """String representation of user"""
+        return self.email
+```
+in settings.py
+AUTH_USER_MODEL = 'your_app_name.User'
+
+Than run
+python manage.py makemigrations
+python manage.py migrate
